@@ -1,0 +1,21 @@
+<template>
+  <el-icon class="collapse-icon" @click="menuStore.setCollapse()">
+    <component :is="isCollapse ? 'expand' : 'fold'"></component>
+  </el-icon>
+  <!-- <el-icon><Fold /></el-icon> -->
+</template>
+    
+<script setup lang='ts'>
+import { computed } from "vue";
+import MenuStore from "../../../stores/modules/menu";
+const menuStore = MenuStore();
+const isCollapse = computed((): boolean => menuStore.isCollapse);
+</script>
+    
+<style scoped lang="less">
+.collapse-icon {
+	margin-right: 20px;
+	font-size: 22px;
+	cursor: pointer;
+}
+</style>
