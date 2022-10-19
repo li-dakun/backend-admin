@@ -8,7 +8,7 @@ import axios from 'axios'
 import generaMenu from './utils/menu';
 import {onMounted} from "vue-demi";
 
-// import useTabStore from "./stores/modules/tab";
+// import useTabStore from "./store/modules/tab";
 // const tabStore = useTabStore();
 // onMounted(()=>{
 //   // 刷新页面查询用户菜单

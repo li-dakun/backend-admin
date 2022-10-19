@@ -75,7 +75,7 @@
 
 import {ref, computed, onMounted} from "vue";
 import {useRouter, useRoute} from "vue-router";
-import useTabStore from "../../stores/modules/tab";
+import useTabStore from "../../store/modules/tab";
 // import routes from "../../router/index.ts";
 
 const route = useRoute();

@@ -9,7 +9,6 @@
       <el-header>
         <HeaderLeft/>
         <HeaderRight/>
-
       </el-header>
       <!-- 内容 -->
       <Main/>
@@ -27,7 +26,7 @@ import Main from './Main/index.vue';
 
 // import NavBar from "./components/NavBar.vue";
 // import SideBar from "./components/SideBar.vue";
-// import useTabStore from "../stores/modules/tab";
+// import useTabStore from "../store/modules/tab";
 // const tabStore = useTabStore();
 // const isHide = computed(() => (tabStore.collapse ? "hideSideBar" : ""));
 </script>

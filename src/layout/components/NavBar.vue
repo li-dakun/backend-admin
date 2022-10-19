@@ -70,7 +70,7 @@
 import { computed,onMounted, reactive, ref } from "vue-demi";
 import { useRouter, useRoute } from "vue-router";
 import axios from 'axios'
-import useTabStore from "../../stores/modules/tab";
+import useTabStore from "../../store/modules/tab";
 import  resetRouter  from '../../router/index'
 const route = useRoute();
 const router = useRouter();

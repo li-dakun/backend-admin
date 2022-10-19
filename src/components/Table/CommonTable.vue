@@ -11,7 +11,7 @@
     >
       <el-table-column type="selection" width="50" />
      <template v-for="(item, index) in tableHeader" :key="index">
-        <!--  <el-table-column
+         <el-table-column
           :prop="item.prop"
           :label="item.label"
           :fixed="item.fixed"
@@ -22,15 +22,19 @@
           :type="item.type"
           :width="item.width"
         >
-          template是否需要根据需求展示页面进行判断、确认使用插槽时给布尔值
-          <slot :name="item.slot"></slot>
-          <slot v-if="item.template ? true : flase" :name="item.slot"></slot>
-          <template #default:scope v-if="item.template">
+          <!-- template是否需要根据需求展示页面进行判断、确认使用插槽时给布尔值 -->
+          <!-- <slot v-if="item.slot" :name="item.slot" :scopeData="scope"></slot> -->
+          <!-- <slot v-if="item.template ? true : flase" :name="item.slot"></slot> -->
+          
+          <!-- <template v-if="item.template" #default="scope">
              <slot v-if="item.slot" :name="item.slot" :scopeData="scope"> </slot>
+          </template> -->
+          <template #default:scope>
+            <slot :name="item.slot" :row="scope.row" :index="scope.$index"></slot>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <!-- 插槽：标题文字要特殊显示 | 操作 -->
-        <el-table-column
+        <!-- <el-table-column
           v-if="item.slot"
           :key="index"
           :prop="item.prop"
@@ -44,9 +48,9 @@
           :width="item.width"
         >
           <slot :name="item.slot"></slot>
-        </el-table-column>
+        </el-table-column> -->
         <!-- 文字不需要特殊显示 -->
-        <el-table-column
+        <!-- <el-table-column
           v-else
           :key="index + 1"
           :prop="item.prop"
@@ -62,7 +66,7 @@
           <template #default="scope">
             <span>{{ scope.row[item.prop] ? scope.row[item.prop] : "" }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </template>
     </el-table>
     <!-- 分页 -->

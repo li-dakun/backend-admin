@@ -5,9 +5,9 @@ import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import pinia from './stores/index'
+import pinia from './store/index'
 import router from './router/index'
-// import './assets/css/index.css'
+import './assets/css/index.css'
 // iconfont css
 import "./assets/iconfont/iconfont.less";
 // font css
@@ -25,16 +25,16 @@ import "./styles/reset.less";
 import "./styles/common.less";
 //icon图标全局引入
 
+// vue i18n
+import I18n from "./language/index";
+
 Object.keys(ElementPlusIconsVue).forEach((key) => {
   app.component(key, ElementPlusIconsVue[key as keyof typeof ElementPlusIconsVue]);
 });
 
 
-app.use(router)
-app.use(ElementPlus, {
+app.use(router).use(ElementPlus, {
   locale: zhCn
-})
-app.use(pinia)
-app.use(Antd)
+}).use(I18n).use(pinia).use(Antd)
 // app.use(mavonEditor)
 app.mount("#app")

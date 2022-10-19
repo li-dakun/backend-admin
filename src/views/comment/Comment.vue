@@ -26,18 +26,35 @@
       @handleSizeChange="sizeChange"
       @handleCurrentChange="currentChange"
     >
-      <template v-slot:Title>
-        <!-- <slot v-if="item.slot" :name="item.slot" :scopeData="scope"> </slot> -->
-        <span v-if="articleTitle">{{ articleTitle.articleTitle }}</span>
-        <span v-else>1234dqw</span>
+      <!-- 头像 -->
+      <template #address="{ row }">
+        <el-image
+          :src="row.avatar"
+          fit="contain"
+          style="width: 60px; height: 60px"
+        />
+        <!-- <span>演示slot使用--{{ row.address }}</span> -->
       </template>
-      <!-- <template v-slot:avatar>
+      <!-- <template #avatar="{ row }">
         <el-image
           :src="getAssetsImages(avatar)"
           fit="contain"
-          style="width: 100px; height: 100px"
+          style="width: 60px; height: 60px"
         />
       </template> -->
+      <!-- 标题 -->
+      <template #title="{ row }">
+        <!-- <span>{{ row.articleTitle ? "articleTitle" : "无" }}</span> -->
+        <span v-if="row.articleTitle">{{ articleTitle }}</span>
+        <span v-else>无</span>
+         <span v-if="scope.row.articleTitle">
+            {{ scope.row.articleTitle }}
+          </span>
+          <span v-else>无</span>
+        <!-- <slot v-if="item.slot" :name="item.slot" :scopeData="scope"> </slot> -->
+        <!-- <span v-if="articleTitle">{{ articleTitle.articleTitle }}</span>
+        <span v-else>1234dqw</span> -->
+      </template>
       <!-- <template v-slot:articleTitle>
         <span v-if="articleTitle">
           {{ articleTitle }}
@@ -107,12 +124,12 @@ const tableData = reactive([
   {
     avatar:
       "https://img2.baidu.com/it/u=1035356506,3713698341&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
-    // nickname: "东东",
-    // replyNickname: "无",
-    articleTitle: "啊啦啦啦啦啦",
+    nickname: "东东",
+    replyNickname: "无",
+    articleTitle: '',
     commentContent: "test1",
     createTime: " 2022-09-25",
-    // isReview: "状态",
+    isReview: "状态",
   },
   // {
   //   avatar:
@@ -134,22 +151,22 @@ const tableHeader = reactive([
     width: "130px",
     align: "center", // 对齐方式
     slot: "avatar", //定义插槽名称可自定义
-    template: true, //确认使用插槽时给布尔值
+    // template: true, //确认使用插槽时给布尔值
   },
   {
     prop: "nickname",
     label: "评论人",
+    fixed: "left",
     width: "130px",
     align: "center", // 对齐方式
   },
-
   {
     prop: "articleTitle",
     label: "文章标题",
     width: "130px",
     align: "left", // 对齐方式
-    slot: "Title",
-    template: true,
+    slot: "title",
+    // template: true,
   },
   {
     prop: "replyNickname",
