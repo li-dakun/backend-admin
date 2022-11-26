@@ -1,0 +1,55 @@
+.card {
+
+    .title {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #202a34;
+    }
+
+    .title::before {
+        content: '';
+        width: 24px;
+        height: 16px;
+        border-left: 3px solid #0081ff;
+        margin-right: 20px;
+    }
+
+    .title-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.25rem;
+        margin-top: 2.25rem;
+
+        .elinput {
+            position: relative;
+            font-size: 14px;
+            display: inline-block;
+            width: 500px;
+        }
+
+        .save-btn {
+            margin-left: 0.75rem;
+            background: #fff;
+            color: #f56c6c;
+        }
+    }
+
+    :deep(.el-dialog__body) {
+        height: 700px !important;
+        overflow: auto;
+    }
+
+    .demo-form-inline {
+        margin-top: 40px;
+    }
+
+    .tableTop {
+        font-size: 14px;
+
+        color: #999;
+    }
+}

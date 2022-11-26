@@ -1,6 +1,8 @@
 // * Menu
 declare namespace Menu {
 	interface MenuOptions {
+		isKeepAlive: string;
+		meta: any;
 		path: string;
 		name: string;
 		// title: string;

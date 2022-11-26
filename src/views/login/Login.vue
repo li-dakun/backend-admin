@@ -50,6 +50,9 @@
           :loading="loading"
           >登录
         </el-button>
+        <!-- <el-button type="primary" @click="submitForm(ruleFormRef)"
+          >登录
+        </el-button> -->
       </div>
     </div>
   </div>
@@ -69,19 +72,18 @@ import {
   UserFilled,
   CircleClose,
 } from "@element-plus/icons-vue";
-import type {
-  ElForm,
-  FormInstance,
-  ElMessage,
-  ElNotification,
-} from "element-plus";
+import { ElForm, FormInstance, ElMessage, ElNotification } from "element-plus";
 import axios from "axios";
 import { GlobalStore } from "../../store/index";
 import { MenuStore } from "../../store/modules/menu";
 import { TabsStore } from "../../store/modules/tabs";
+import { useUserStore } from "../../store/modules/user";
 import { getTimeState } from "../../utils/util";
+import generaMenu from "../../api/menu";
+import { th } from "element-plus/es/locale";
 const globalStore = GlobalStore();
 const menuStore = MenuStore();
+const userStore = useUserStore();
 const tabStore = TabsStore();
 
 // 定义 formRef（校验规则）
@@ -93,8 +95,8 @@ const loginRules = reactive({
 });
 // 登录表单数据
 const loginForm = reactive({
-  username: "",
-  password: "",
+  username: "admin@163.com",
+  password: "123456",
 });
 
 const loading = ref(false);
@@ -109,13 +111,51 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid) => {
     if (valid) {
-      loading.value = true;
-      let param = new URLSearchParams();
-      param.append("username", loginForm.username);
-      param.append("password", loginForm.password);
-      axios.post("/api/users/login", param).then(({ data }) => {
-        console.log(data);
+      ///192474631
+      var captcha = new TencentCaptcha("2091489673", (res: any) => {
+        if (res.ret === 0) {
+          loading.value = true;
+          let param = new URLSearchParams();
+          param.append("username", loginForm.username);
+          param.append("password", loginForm.password);
+          axios.post("/api/users/login", param).then(({ data }) => {
+            console.log(data);
+            if (data.flag) {
+              // 登录后保存用户信息
+              // console.log(menuStore.login(data.data));
+              // menuStore.login(data.data);
+              // MenuStore('login',data.data);
+              // store.commit('login', data.data)
+              // generaMenu();
+              // ElMessage.success({
+              //   message: "登录成功!",
+              // });
+              // router.push({ path: "/" });
+
+              userStore.userInfo = data.data;
+              sessionStorage.setItem('token', data.data.token);
+              // localStorage.setItem('token', data.data.token);
+              userStore.token = data.data.token;
+
+              generaMenu();
+              // ElMessage.success({
+              //   message: "登录成功!",
+              // });
+              ElNotification({
+                title: getTimeState(),
+                message: "欢迎登录 两米半",
+                type: "success",
+                duration: 3000,
+              });
+              router.push({ path: "/" });
+            } else {
+              ElMessage.error(data.message);
+            }
+          });
+        }
       });
+      // 显示验证码
+      captcha.show();
     } else {
       return false;
     }

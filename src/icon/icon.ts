@@ -1,11 +1,1 @@
-
-import {
-    Plus,
-    Delete,
-    Search,
-    InfoFilled,
-    Download,
-    Upload,
-    Lock,
-    UserFilled
-} from "@element-plus/icons-vue";
+import { Delete, Edit, Search, Share, Upload,Plus } from '@element-plus/icons-vue'

@@ -1,0 +1,55 @@
+/* 富文本组件校验失败样式 */
+.is-error {
+    .editor-box {
+        border-color: var(--el-color-danger);
+    }
+}
+
+/* 富文本组件禁用样式 */
+.editor-disabled {
+    cursor: not-allowed !important;
+}
+
+/* 富文本组件样式 */
+.editor-box {
+    /* 防止富文本编辑器全屏时 tabs组件 在其层级之上 */
+    z-index: 2;
+    width: 100%;
+    border: 1px solid #cccccc;
+
+    .editor-toolbar {
+        border-bottom: 1px solid #cccccc;
+    }
+
+    .editor-content {
+        overflow-y: hidden;
+    }
+}
+
+
+
+.el-form-item__content {
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1;
+    line-height: 32px;
+    position: relative;
+    font-size: var(--font-size);
+    min-width: 0;
+
+    .upload-demo {
+        width: 100%;
+    }
+}
+
+.popover-title {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.popover-container {
+    margin-top: 1rem;
+    height: 260px;
+    overflow-y: auto;
+}

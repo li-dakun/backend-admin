@@ -38,7 +38,7 @@ const handleCommand = (command) => {
 		type: "warning"
 	}).then(() => {
 		// router.push({ name: "login" });
-		globalStore.setToken("");
+		// globalStore.setToken("");
 		ElMessage({
 			type: "success",
 			message: "退出登录成功！"

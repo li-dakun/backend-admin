@@ -13,16 +13,17 @@
         active-text-color="#409EFF"
       >
         <!-- <SideBar :menuList="menuList" /> -->
-
-        <template v-for="item of router.options.routes" :key="item.path">
+        <!-- menuList  router.options.routes -->
+        <template v-for="item of menuStore.menuList" :key="item.path">
           <!-- 二级菜单 -->
           <template v-if="item.name && item.children && !item.hidden">
             <el-sub-menu :key="item.path" :index="item.path">
               <!-- 二级菜单标题 -->
               <template #title>
-                <el-icon>
+                <!-- <el-icon>
                   <component :is="item.icon" />
-                </el-icon>
+                </el-icon> -->
+                <i :class="item.icon" />
                 <span>{{ item.name }}</span>
               </template>
               <!-- 二级菜单选项 -->
@@ -32,9 +33,10 @@
                   :key="index"
                   :index="item.path"
                 >
-                  <el-icon>
-                    <component :is="item.meta.icon" />
-                  </el-icon>
+                  <!-- <el-icon>
+                    <component :is="item.icon" />
+                  </el-icon> -->
+                  <i :class="item.icon" />
                   <span>{{ item.name }}</span>
                 </el-menu-item>
               </template>
@@ -43,9 +45,10 @@
           <!-- 一级菜单 -->
           <template v-else-if="!item.hidden">
             <el-menu-item :index="item.path" :key="item.path">
-              <el-icon>
-                <component :is="item.children[0].meta.icon" />
-              </el-icon>
+              <!-- <el-icon>
+                <component :is="item.children[0].icon" />
+              </el-icon> -->
+              <i :class="item.children[0].icon" />
               <span>{{ item.children[0].name }}</span>
             </el-menu-item>
           </template>
@@ -65,7 +68,7 @@ const route = useRoute();
 const menuStore = MenuStore();
 const activeMenu = computed((): string => route.path);
 const isCollapse = computed((): boolean => menuStore.isCollapse);
-const menuList = computed((): Menu.MenuOptions[] => menuStore.menuList);
+const menuList = computed(() => menuStore.menuList);
 
 // aside 自适应
 const screenWidth = ref<number>(0);

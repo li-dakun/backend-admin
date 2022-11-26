@@ -7,12 +7,13 @@ import piniaPersistConfig from "../../config/piniaPersist";
 
 
 export const TabsStore = defineStore({
-    id: "TabsState",
-    state: (): TabsState => ({
-        tabsMenuValue: HOME_URL,
-        tabsMenuList: [{ name: "首页", path: HOME_URL, icon: "home-filled", close: false }]
-    }),
-    getters: {},
+	id: "TabsState",
+	state: (): TabsState => ({
+		tabsMenuValue: HOME_URL,
+		// tabsMenuList: [{ name: "首页", path: '/', icon: "home-filled", close: false }]
+		tabsMenuList: [{ name: '首页', path: '/' }],
+	}),
+	getters: {},
 	actions: {
 		// Add Tabs
 		async addTabs(tabItem: TabsOptions) {
@@ -21,7 +22,9 @@ export const TabsStore = defineStore({
 			const tabInfo: TabsOptions = {
 				name: tabItem.name,
 				path: tabItem.path,
-				close: tabItem.close
+				close: tabItem.close,
+				isKeepAlive: "",
+				meta: undefined
 			};
 			if (this.tabsMenuList.every(item => item.path !== tabItem.path)) {
 				this.tabsMenuList.push(tabInfo);
@@ -71,4 +74,6 @@ export const TabsStore = defineStore({
 		}
 	},
 	persist: piniaPersistConfig("TabsState")
+
+
 })

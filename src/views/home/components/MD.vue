@@ -10,7 +10,7 @@
         </div>
         <div class="card-desc">
           <div class="card-title">访问量</div>
-          <div class="card-count">{{ viewsCount }}</div>
+          <div class="card-count">{{ props.initParam.viewsCount }}</div>
         </div>
       </el-card>
     </el-col>
@@ -24,7 +24,7 @@
         </div>
         <div class="card-desc">
           <div class="card-title">用户量</div>
-          <div class="card-count">{{ userCount }}</div>
+          <div class="card-count">{{ props.initParam.userCount }}</div>
         </div>
       </el-card>
     </el-col>
@@ -38,7 +38,7 @@
         </div>
         <div class="card-desc">
           <div class="card-title">文章量</div>
-          <div class="card-count">{{ articleCount }}</div>
+          <div class="card-count">{{ props.initParam.articleCount }}</div>
         </div>
       </el-card>
     </el-col>
@@ -52,7 +52,7 @@
         </div>
         <div class="card-desc">
           <div class="card-title">留言量</div>
-          <div class="card-count">{{ messageCount }}</div>
+          <div class="card-count">{{ props.initParam.messageCount }}</div>
         </div>
       </el-card>
     </el-col>
@@ -60,6 +60,13 @@
 </template>
     
 <script setup lang='ts'>
+interface DrawerProps {
+  initParam?: any;
+}
+//接收父组件参数
+const props = withDefaults(defineProps<DrawerProps>(), {
+  initParam: {},
+});
 </script>
     
 <style scoped>
@@ -86,5 +93,4 @@
   color: #666;
   font-size: 1.25rem;
 }
-
 </style>

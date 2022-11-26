@@ -12,7 +12,6 @@
       </el-header>
       <!-- 内容 -->
       <Main/>
-
     </el-container>
   </el-container>
 </template>

@@ -51,43 +51,43 @@ const submitForm = (formEl: FormInstance | undefined) => {
   // let captchaId = 'TENCENT_CAPTCHA';
   if (!formEl) return
   formEl.validate((valid) => {
-    // // if (valid) {
-    // //   var captcha = new TencentCaptcha(config.TENCENT_CAPTCHA, (res: any) => {
-    // //     if (res.ret === 0) {
-    // //       let param = new URLSearchParams();
-    // //       param.append('username', loginForm.username);
-    // //       param.append('password', loginForm.password);
-    // //       axios.post('/api/users/login', param).then((data) => {
-    // //         console.log(data.data);
-    // //         console.log()
-    // //         if (data.data.flag) {
-    // //           // 登录后保存用户信息
-    // //           console.log(tabStore.login(data.data));
-    // //           tabStore.login(data.data);
-    // //           generaMenu();
-    // //           ElMessage.success({
-    // //             message: '登录成功!'
-    // //           });
-    // //           // this.$message.success('登录成功')
-    // //           router.push({path: "/"});
-    // //           // router.push({path: '/home'})
-    // //         } else {
-    // //           // ElMessage.error(data.message);
-    // //           // this.$message.error(data.message)
-    // //           console.log('error submit!')
-    // //         }
-    // //       })
-    // //
-    // //
-    // //     }
-    // //   })
-    // //   // 显示验证码
-    // //   captcha.show()
-    // //   console.log('submit!')
-    // } else {
-    //   // console.log('error submit!')
-    //   return false
-    // }
+    if (valid) {
+      var captcha = new TencentCaptcha(config.TENCENT_CAPTCHA, (res: any) => {
+        if (res.ret === 0) {
+          let param = new URLSearchParams();
+          param.append('username', loginForm.username);
+          param.append('password', loginForm.password);
+          axios.post('/api/users/login', param).then((data) => {
+            console.log(data.data);
+            console.log()
+            if (data.data.flag) {
+              // 登录后保存用户信息
+              console.log(tabStore.login(data.data));
+              tabStore.login(data.data);
+              generaMenu();
+              ElMessage.success({
+                message: '登录成功!'
+              });
+              // this.$message.success('登录成功')
+              router.push({path: "/"});
+              // router.push({path: '/home'})
+            } else {
+              ElMessage.error(data.message);
+              // this.$message.error(data.message)
+              console.log('error submit!')
+            }
+          })
+    
+    
+        }
+      })
+      // 显示验证码
+      captcha.show()
+      console.log('submit!')
+    } else {
+      // console.log('error submit!')
+      return false
+    }
   })
 }
 </script>

@@ -21,6 +21,6 @@
 		// 跳过库检查，解决打包失败
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/assets/js/china.js"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/assets/ts/china.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

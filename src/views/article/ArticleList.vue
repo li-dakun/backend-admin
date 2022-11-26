@@ -1,436 +1,99 @@
 <template>
-  <el-card class="main-card">
-    <div class="title">{{ this.$route.name }}</div>
-    <!-- 文章状态 -->
-    <div class="article-status-menu">
-      <span :style="{ marginRight: '8px' }">状态</span>
-      <a-checkable-tag v-model:checked="checked1" @change="handleChange"
-        >全部</a-checkable-tag
-      >
-      <a-checkable-tag v-model:checked="checked2" @change="handleChange"
-        >公开</a-checkable-tag
-      >
-      <a-checkable-tag v-model:checked="checked3" @change="handleChange"
-        >私密</a-checkable-tag
-      >
-      <a-checkable-tag v-model:checked="checked3" @change="handleChange"
-        >草稿箱</a-checkable-tag
-      >
-      <a-checkable-tag v-model:checked="checked3" @change="handleChange"
-        >回收站</a-checkable-tag
-      >
-    </div>
+  <div class="card content-box">
+    <div class="title">{{ $route.name }}</div>
+    <ProTable
+      ref="proTable"
+      :columns="columns"
+      :initParam="initParam"
+      :dataCallback="dataCallback"
+    >
+	<!-- <template #isFeatured="scope">
+		<el-switch active-color="#13ce66"
+            inactive-color="#F4F4F5"/>
+	</template> -->
     <!-- 表格操作 -->
-    <div class="table">
-      <div class="option-box">
-        <!-- 文章类型 -->
-        <el-select
-          size="small"
-          v-model="type"
-          filterable
-          clearable
-          placeholder="请选择文章类型"
-        >
-          <el-option
-            v-for="item in types"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <!-- 分类 -->
-        <el-select
-          size="small"
-          v-model="categoryId"
-          filterable
-          clearable
-          placeholder="请选择分类"
-        >
-          <el-option
-            v-for="item in types"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <!-- 标签 -->
-        <el-select
-          size="small"
-          v-model="categoryId"
-          filterable
-          clearable
-          placeholder="请选择标签"
-        >
-          <el-option
-            v-for="item in types"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <!-- 文章名 -->
-        <el-input
-          size="small"
-          v-model="keywords"
-          placeholder="请输入文章名"
-          style="width: 200px"
-          :prefix-icon="Search"
-        />
-        <el-button
-          size="small"
-          type="primary"
-          :icon="Search"
-          style="margin-left: 1rem"
-          @click="searchCategory"
-        >
-          搜索</el-button
-        >
-        <div class="search">
-          <el-button type="danger" size="small" :icon="Delete"
-            >批量删除</el-button
-          >
-          <el-button
-            type="primary"
-            size="small"
-            :icon="Download"
-            @click="openModel(null)"
-            >批量导出</el-button
-          >
-          <el-button
-            type="primary"
-            size="small"
-            :icon="Upload"
-            @click="openModel(null)"
-            >批量导入</el-button
-          >
-        </div>
-      </div>
-    </div>
-    <!-- 表格展示 -->
-    <CommonTable></CommonTable>
-    <!-- 分页 -->
-    <!-- 批量逻辑删除对话框 -->
-    <!-- 批量彻底删除对话框 -->
-  </el-card>
+			<template #operation="scope">
+				<el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)">查看</el-button>
+				<el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)">编辑</el-button>
+				<el-button type="primary" link :icon="Refresh" @click="resetPass(scope.row)">重置密码</el-button>
+				<el-button type="primary" link :icon="Delete" @click="deleteAccount(scope.row)">删除</el-button>
+			</template>
+    </ProTable>
+  </div>
 </template>
-    
+  
 <script setup lang='ts'>
+import { ref, reactive } from "vue";
+import { ElMessage } from "element-plus";
 import {
-  Plus,
+  CirclePlus,
   Delete,
-  Search,
-  InfoFilled,
+  EditPen,
   Download,
   Upload,
+  View,
+  Refresh,
 } from "@element-plus/icons-vue";
-import { CloudDownloadOutlined } from "@ant-design/icons-vue";
-import { reactive, toRefs, ref } from "vue";
-import CommonTable from "../../components/Table/CommonTable.vue";
+import ProTable from "../../components/Table/index.vue";
 
-// const state = ref({
-//   tags: ["Movies", "Books", "Music", "Sports"],
-//   selectedTags: [] as string[],
-// });
+// 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
+const proTable = ref();
+// 表格配置项
+const columns: Partial<ColumnProps>[] = [
+  // { type: "selection", width: 80, fixed: "left" },
+	// { type: "index", label: "#", width: 80 },
+	// { type: "expand", label: "Expand", width: 100 },
+	// { prop: "username", label: "用户姓名", width: 130, search: true,renderHeader },
+	// // 😄 enum 可以直接是数组对象，也可以是请求方法(proTable 内部会执行获取 enum 的这个方法)，下面用户状态也同理
+	// // 😄 enum 为请求方法时，后台返回的数组对象 key 值不是 label 和 value 的情况，可以在 searchProps 中指定 label 和 value 的 key 值
+	// {
+	// 	prop: "gender",
+	// 	label: "性别",
+	// 	width: 120,
+	// 	sortable: true,
+	// 	search: true,
+	// 	searchType: "select",
+	// 	searchProps: { label: "genderLabel", value: "genderValue" }
+	// },
+	// { prop: "idCard", label: "身份证号", search: true },
+	// { prop: "email", label: "邮箱", search: true },
+	// { prop: "address", label: "居住地址", search: true },
+	// {
+	// 	prop: "status",
+	// 	label: "用户状态",
+	// 	sortable: true,
+	// 	search: true,
+	// 	searchType: "select",
+	// 	searchProps: { label: "userLabel", value: "userStatus" }
+	// },
+	// {
+	// 	prop: "createTime",
+	// 	label: "创建时间",
+	// 	width: 200,
+	// 	sortable: true,
+	// 	search: true,
+	// 	searchType: "datetimerange",
+	// 	searchProps: {
+	// 		disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+	// 	},
+	// 	searchInitParam: ["2022-09-30 00:00:00", "2022-09-20 23:59:59"]
+	// },
+	// { prop: "operation", label: "操作", width: 330, fixed: "right", renderHeader }
 
-//状态
-const handleChange = (checked: boolean) => {
-  console.log(checked);
-};
-//条件选择器
-// 文章类型
-const type = ref("");
-const types = [
-  {
-    value: 1,
-    label: "原创",
-  },
-  {
-    value: 2,
-    label: "转载",
-  },
-  {
-    value: 3,
-    label: "翻译",
-  },
+  { type: "selection", width: 55, fixed: "left" },
+  { prop: "articleCover", label: "文章封面", width: 180, align: "center" },
+  { prop: "articleTitle", label: "标题", width: 160 },
+  { prop: "categoryName", label: "分类", width: 140 },
+  { prop: "tagDTOs", label: "标签", width: 140 },
+  { prop: "viewsCount", label: "浏览量", width: 100 },
+  { prop: "type", label: "类型", width: 100 },
+  { prop: "createTime", label: "发布时间", width: 160 },
+  { prop: "isTop", label: "置顶", width: 120 },
+  { prop: "isFeatured", label: "推荐", width: 120 },
+  { prop: "operation", label: "操作", width: 330, fixed: "right" }
 ];
-//分类
-const categoryId = ref("");
-const categories = [
-  {
-    value: 1,
-    label: "原创",
-  },
-  {
-    value: 2,
-    label: "转载",
-  },
-  {
-    value: 3,
-    label: "翻译",
-  },
-];
-//标签
-const tagId = ref("");
-const tags = [
-  {
-    value: 1,
-    label: "原创",
-  },
-  {
-    value: 2,
-    label: "转载",
-  },
-  {
-    value: 3,
-    label: "翻译",
-  },
-];
-//搜索
-const keywords = ref("");
-
-//表格操作
-const tableData = [
-  {
-    date: "2016-05-03",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Home",
-  },
-  {
-    date: "2016-05-02",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-04",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Home",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
-  },
-];
-////表格标题展示
-const tableHeader=reactive([
-  {
-    prop: "articleCover",
-    fixed: "left",
-    label: "文章封面",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "articleTitle",
-    fixed: "left",
-    label: "标题",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "categoryName",
-    fixed: "left",
-    label: "分类",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "tagDTOs",
-    fixed: "left",
-    label: "标签",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "viewsCount",
-    fixed: "left",
-    label: "浏览量",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "type",
-    fixed: "left",
-    label: "类型",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "createTime",
-    fixed: "left",
-    label: "发表时间",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "isTop",
-    fixed: "left",
-    label: "置顶",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-  {
-    prop: "isFeatured",
-    fixed: "left",
-    label: "推荐",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  },
-    {
-    fixed: "left",
-    label: "操作",
-    width: "130px",
-    align: "center", // 对齐方式
-    slot: "avatar",
-  }
-])
-const handleDelete = (index: number, row: User) => {
-  console.log(index, row);
-};
-
 </script>
-    
-<style lang="less"  scoped>
-.article-status-menu {
-  font-size: 14px;
-  margin-top: 16px;
-  color: #999;
-}
-.table {
-  margin-top: 10px;
-  .option-box {
-    margin-top: 1.5rem;
-    .el-select {
-      margin-right: 1.5rem;
-    }
-    .search {
-      margin-top: 0.5rem;
-    }
-  }
-  .operation-container {
-    display: flex;
-    align-items: center;
-    // margin-bottom: 1.25rem;
-    // margin-top: 1.25rem;
-  }
-}
-.el-table {
-  margin-top: 1rem;
-}
+  
+<style scoped lang="less">
+@import "./index.less";
 </style>
-    
